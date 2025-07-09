@@ -1,0 +1,28 @@
+1. Module Board
+    - board state
+    - get position
+    - set position
+    - check for win
+
+2. Module GameController
+    - starting the game
+    - switching turns
+    - check if the move is valid
+    - asking the board if there is a winner
+    - declaring the result
+
+3. Factory Player
+    - storing the player's mark
+    - taking input
+
+    -> make Computer and extend with:
+        - check open positions
+        - choose random open position
+
+
+GameController.startGame();
+--> Player plays
+--> GameController checks win via Board
+--> If no win, switch turns
+--> Computer plays
+--> Repeat
