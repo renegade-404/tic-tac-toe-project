@@ -1,8 +1,8 @@
 1. Module Board
-    - board state
+    - board state // done
     - get position
-    - set position
-    - check for win
+    - set position // done
+    - check for win // done
 
 2. Module GameController
     - starting the game
@@ -12,12 +12,13 @@
     - declaring the result
 
 3. Factory Player
-    - storing the player's mark
+    - store the player's mark // done
     - taking input
 
-    -> make Computer and extend with:
-        - check open positions
-        - choose random open position
+4. Factory Computer
+    - store the computer's mark // done
+    - check open positions // done
+    - choose random open position // done
 
 
 GameController.startGame();
