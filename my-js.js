@@ -1,6 +1,6 @@
 const Board = (function(){
     let board = [["", "", ""], ["", "", ""], ["", "", ""]];
-    const winningPositions = {
+    const winningPos = {
         1: [[0, 0], [0, 1], [0, 2]],
         2: [[1, 0], [1, 1], [1, 2]],
         3: [[2, 0], [2, 1], [2, 2]],
@@ -25,13 +25,19 @@ const Board = (function(){
         return currentPos;
     }
 
+    function isWinningPos(playerPos) { // returns an array of winning positions or an empty array
+        playerPos = playerPos.filter((item) => {
+            for (let key in winningPos) {
+                if (winningPos[key].toString() == item.toString()) return item;
+            }
+        })
+        return playerPos;
+    }
+
     const setPosition = function(position, mark) {
         board[position[0]].splice(position[1], 1, mark);
     }
 
-    const checkForWin = function() {
-
-    }
 
     return {setPosition, board}
 })();
