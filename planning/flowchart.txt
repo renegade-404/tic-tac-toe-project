@@ -1,19 +1,19 @@
 1. Module Board
     - board state // done
-    - get position
+    - get position // done
     - set position // done
     - check for win // done
 
 2. Module GameController
-    - starting the game
-    - switching turns
-    - check if the move is valid
-    - asking the board if there is a winner
-    - declaring the result
+    - starting the game // done
+    - switching turns // done
+    - check if the move is valid // done
+    - asking the board if there is a winner // done
+    - declaring the result // done
 
 3. Factory Player
     - store the player's mark // done
-    - taking input
+    - taking input // done
 
 4. Factory Computer
     - store the computer's mark // done
