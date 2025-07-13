@@ -1,5 +1,8 @@
+const player1 = createPlayer('Maru');
+const computer = createComputer();
+
 const Board = (function(){
-    let board = [["", "", ""], ["", "", ""], ["", "", ""]];
+    const board = [["", "", ""], ["", "", ""], ["", "", ""]];
     const winningPos = {
         1: [[0, 0], [0, 1], [0, 2]],
         2: [[1, 0], [1, 1], [1, 2]],
@@ -13,7 +16,7 @@ const Board = (function(){
 
     function checkPos(playerMark) { // returns an array of  current positions
         const column = drawNestIndex(board, playerMark);
-        let currentPos = [];
+        const currentPos = [];
 
         if (column.length > 0) {
             for (let i = 0; i < column.length; i++) {
@@ -31,48 +34,78 @@ const Board = (function(){
                 if (winningPos[key].toString() == item.toString()) return item;
             }
         })
-        return playerPos;
+        return playerPos.toString();
     }
 
-    const setPosition = function(position, mark) {
+    function isBoardEmpty() {
+        return board.some(item => item.includes(""));
+    }
+
+    const setPos = function(position, mark) {
         board[position[0]].splice(position[1], 1, mark);
     }
 
 
-    return {setPosition, board}
+    return {setPos, checkPos, isWinningPos, isBoardEmpty, board}
+})();
+
+const GameController = (function(){
+    let gameOnFlag = true;
+    let playerFlag = true;
+    let computerFlag = true;
+
+    function takeInput() {
+        const move = prompt("Please choose your position accordingly to the scheme: row number,square number.")
+        return move.split(",").map(item => +item);
+    }
+
+    function currentTurn(move, mark, flag) {
+        flag == true;
+        const currentMove = move();
+        Board.setPos(currentMove, mark);
+        console.log(Board.board);
+        const checkCurrentPos = Board.checkPos(mark);
+        const isWinPos = Board.isWinningPos(checkCurrentPos);
+        if (isWinPos.length > 1) {
+                gameOnFlag == false;
+                console.log(isWinPos);
+        } else if (!Board.isBoardEmpty) {
+            gameOnFlag == false;
+            console.log("It's a draw!")
+        } else flag == false;
+    }
+
+    function gameOn() {
+        while (gameOnFlag) {
+            currentTurn(takeInput, player1.playerMark, playerFlag);
+            if (Board.isBoardEmpty && computerFlag) {
+                currentTurn(computer.choosePosition,
+                     computer.computerMark, computerFlag);
+            }
+        }
+    }
+
+    gameOn();
+    
 })();
 
 
 function createPlayer(name) {
     const playerName = name;
-    const playerMark = "O";
+    const playerMark = "o";
 
-    function takeInput(prompt) {
-        return prompt;
-    }
-
-    return {playerName, playerMark, takeInput}
+    return {playerName, playerMark}
 };
 
 function createComputer() {
-    const computerMark = "X";
+    const computerMark = "x";
 
-    function choosePosition(arr) { // return an array of open position indexes
+    function choosePosition() { // returns an array of open position indexes
   
-        function drawIndex(arr) {
-            return arr
-                .map((item, index) => {
-                    if (Array.isArray(item)) {
-                        if (item.includes("")) return index
-                    } else if (item === "") return index
-                })
-                .filter(item => item !== undefined);
-        }
-
-        const mainArr = drawIndex(arr);
+        const mainArr = drawNestIndex(Board.board, "");
         const randMainIndex = Math.floor(Math.random() * mainArr.length);
 
-        const subArr = drawIndex(arr[mainArr[randMainIndex]]);
+        const subArr = drawIndex(Board.board[mainArr[randMainIndex]], "");
         const randSubIndex = Math.floor(Math.random() * subArr.length);
 
         return [mainArr[randMainIndex], subArr[randSubIndex]];
@@ -82,6 +115,20 @@ function createComputer() {
     return {computerMark, choosePosition}
 };
 
-const playerMaru = createPlayer('Maru');
-const playerComputer = createComputer();
+function drawNestIndex(arr, mark) {
+  return arr
+  .map((item, index) => {
+    if (item.includes(mark)) return index
+  })
+  .filter(item => item !== undefined);
+}
+
+function drawIndex(arr, mark) {
+  return arr
+  .map((item, index) => {
+    if (item === mark) return index
+  })
+  .filter(item => item !== undefined);
+}
+
 
