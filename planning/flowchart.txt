@@ -1,3 +1,5 @@
+Logic
+
 1. Module Board
     - board state // done
     - get position // done
@@ -27,3 +29,49 @@ GameController.startGame();
 --> If no win, switch turns
 --> Computer plays
 --> Repeat
+
+UI:
+
+Incorrect move handling:
+- warn if a player chooses taken square
+
+Game Start:
+
+
+Game Reset:
+
+
+Display Winner:
+
+
+Show Squares:
+
+
+
+Game display:
+div.game-container
+    * margin: 0, auto
+
+    - div.game-display
+        * display: flex
+        * flex-direction: column
+        * justify-content: space-between          
+        
+        - div.start-button
+            - button "Start"
+            - after clicking -> reset button appears
+            - after clicking -> game starts
+            - takes 10% of the container's space
+
+        -div.score-display
+            - paragraph "Score: "
+            - span.score "(displays score)"
+        
+        - div.board-display
+            * grid 3x3
+            - takes 70% of the container's space
+        
+        - div.reset-button
+            - button "Reset"
+            - after clicking -> game resets
+            - takes 10% of the container's space
