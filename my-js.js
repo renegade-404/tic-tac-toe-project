@@ -60,19 +60,19 @@ const GameController = (function(){
     }
 
     function currentTurn(move, mark, flag) {
-        flag == true;
+        flag = true;
         const currentMove = move();
         Board.setPos(currentMove, mark);
         console.log(Board.board);
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
         if (isWinPos.length > 1) {
-                gameOnFlag == false;
+                gameOnFlag = false;
                 console.log(isWinPos);
-        } else if (!Board.isBoardEmpty) {
-            gameOnFlag == false;
+        } else if (!Board.isBoardEmpty()) {
+            gameOnFlag = false;
             console.log("It's a draw!")
-        } else flag == false;
+        } else flag = false;
     }
 
     function gameOn() {
