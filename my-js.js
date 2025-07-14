@@ -54,19 +54,15 @@ const GameController = (function(){
     let playerFlag = true;
     let computerFlag = true;
 
-    function takeInput() {
-        const move = prompt("Please choose your position accordingly to the scheme: row number,square number.")
-        return move.split(",").map(item => +item);
-    }
 
     function currentTurn(move, mark, flag) {
         flag = true;
         const currentMove = move();
+        console.log(currentMove);
         Board.setPos(currentMove, mark);
-        console.log(Board.board);
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
-        if (isWinPos.length > 1) {
+        if (isWinPos.length >= 1) {
                 gameOnFlag = false;
                 console.log(isWinPos);
         } else if (!Board.isBoardEmpty()) {
@@ -77,7 +73,7 @@ const GameController = (function(){
 
     function gameOn() {
         while (gameOnFlag) {
-            currentTurn(takeInput, player1.playerMark, playerFlag);
+            currentTurn(player1.takeInput, player1.playerMark, playerFlag);
             if (Board.isBoardEmpty && computerFlag) {
                 currentTurn(computer.choosePosition,
                      computer.computerMark, computerFlag);
@@ -94,7 +90,12 @@ function createPlayer(name) {
     const playerName = name;
     const playerMark = "o";
 
-    return {playerName, playerMark}
+    function takeInput() {
+        const move = prompt("Please choose your position accordingly to the scheme: row number,square number.")
+        return move.split(",").map(item => +item);
+    }
+
+    return {playerName, playerMark, takeInput}
 };
 
 function createComputer() {
