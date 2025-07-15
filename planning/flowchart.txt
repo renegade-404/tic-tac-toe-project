@@ -36,15 +36,23 @@ Incorrect move handling:
 - warn if a player chooses taken square
 
 Game Start:
-
+- click start button
+    - currentTurn activate
 
 Game Reset:
 
 
+
 Display Winner:
+- inside currentTurn: a function that creates a span with the winning
+message; it appears in the middle of the board
 
 
-Show Squares:
+Show Marks:
+- create a function that takes clicked button's dataset and converts it
+to a list
+- take the returned output from the function as an argument for setPos function
+- create a function that inserts a mark to the corresponding button's dataset 
 
 
 
@@ -70,6 +78,10 @@ div.game-container
         - div.board-display
             * grid 3x3
             - takes 70% of the container's space
+            - each grid has a button inside
+                - each button is empty
+                - each button is the size of its grid item
+                - each button has a dataset of its position (0-1 etc.)
         
         - div.reset-button
             - button "Reset"
