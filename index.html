@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tic tac toe</title>
+    <link rel="stylesheet" href="style.css">
     <script src="my-js.js" defer></script>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-display">
+    <div class="game-container flex-column">
+        <div class="game-score flex-column">
             <div class="start-button">
                 <button>Start</button>
             </div>
@@ -16,22 +17,24 @@
                 <p>Score:</p>
                 <span class="score"></span>
             </div>
+        </div>
         <div class="board-display">
             <div class="row1">
-                <div class="cell"><button data-pos="0-0"></button></div>
-                <div class="cell"><button data-pos="0-1"></button></div>
-                <div class="cell"><button data-pos="0-2"></button></div>
+                <div><button class="cell" data-pos="0-0"></button></div>
+                <div><button class="cell" data-pos="0-1"></button></div>
+                <div><button class="cell" data-pos="0-2"></button></div>
             </div>
             <div class="row2">
-                <div class="cell"><button data-pos="1-0"></button></div>
-                <div class="cell"><button data-pos="1-1"></button></div>
-                <div class="cell"><button data-pos="1-2"></button></div>
+                <div><button class="cell" data-pos="1-0"></button></div>
+                <div><button class="cell" data-pos="1-1"></button></div>
+                <div><button class="cell" data-pos="1-2"></button></div>
             </div>
             <div class="row3">
-                <div class="cell"><button data-pos="2-0"></button></div>
-                <div class="cell"><button data-pos="2-1"></button></div>
-                <div class="cell"><button data-pos="2-2"></button></div>
+                <div><button class="cell" data-pos="2-0"></button></div>
+                <div><button class="cell" data-pos="2-1"></button></div>
+                <div><button class="cell" data-pos="2-2"></button></div>
             </div>
+        </div>
         <div class="reset-button"><button>Reset</button></div>
     </div>
 </body>
