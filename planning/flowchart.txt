@@ -57,25 +57,25 @@ to a list
 
 
 Game display:
-div.game-container
+div.game-container // done
     * margin: 0, auto
+    * display: flex
+    * flex-direction: column
+    * justify-content: space-between  
 
-    - div.game-display
-        * display: flex
-        * flex-direction: column
-        * justify-content: space-between          
+    - div.game-score // done       
         
-        - div.start-button
+        - div.start-button //done
             - button "Start"
             - after clicking -> reset button appears
             - after clicking -> game starts
             - takes 10% of the container's space
 
-        -div.score-display
+        -div.score-display //done
             - paragraph "Score: "
             - span.score "(displays score)"
         
-        - div.board-display
+        - div.board-display //done
             * grid 3x3
             - takes 70% of the container's space
             - each grid has a button inside
@@ -83,7 +83,7 @@ div.game-container
                 - each button is the size of its grid item
                 - each button has a dataset of its position (0-1 etc.)
         
-        - div.reset-button
+        - div.reset-button 
             - button "Reset"
             - after clicking -> game resets
             - takes 10% of the container's space
