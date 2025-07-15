@@ -45,6 +45,18 @@ const Board = (function(){
         board[position[0]].splice(position[1], 1, mark);
     }
 
+    function clickingButtons() {
+        const btns = document.querySelectorAll(".cell");
+
+        for (let btn of btns) {
+            btn.addEventListener("click", (e) => {
+                console.log(e.target.dataset.pos);
+            })
+        }
+    }
+
+    clickingButtons();
+
 
     return {setPos, checkPos, isWinningPos, isBoardEmpty, board}
 })();
@@ -60,6 +72,9 @@ const GameController = (function(){
         const currentMove = move();
         console.log(currentMove);
         Board.setPos(currentMove, mark);
+    }
+
+    function checkWin(mark, flag) {
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
         if (isWinPos.length >= 1) {
@@ -74,14 +89,16 @@ const GameController = (function(){
     function gameOn() {
         while (gameOnFlag) {
             currentTurn(player1.takeInput, player1.playerMark, playerFlag);
-            if (Board.isBoardEmpty && computerFlag) {
+            checkWin(player1.playerMark, playerFlag);
+            if (Board.isBoardEmpty() && computerFlag) {
                 currentTurn(computer.choosePosition,
                      computer.computerMark, computerFlag);
+                checkWin(computer.computerMark, computerFlag);
             }
         }
     }
 
-    gameOn();
+    // gameOn();
     
 })();
 
