@@ -1,0 +1,100 @@
+/*variables*/
+
+
+/*Normalize*/
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+body {
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+/*Styling*/
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+}
+
+.game-container {
+    margin: auto;
+    height: 80%;
+    width: 50%;
+    border: 2px solid black;
+
+    & > .game-score, .reset-button {
+        padding: 1rem;
+    }
+}
+
+.board-display {
+    /*container*/
+    border: 2px solid pink;
+    width: 30%;
+    padding: 2rem;
+    
+    /*grid*/
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    justify-content: center;
+
+    & > * {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+
+        & :not(:last-child) {
+            border-right: 2px solid green;
+        }
+    }
+}
+
+.cell {
+    padding: 30px;
+    border: none;
+    background-color: white;
+}
+
+.row2, .row3 {
+    border-top: 2px solid green;
+}
