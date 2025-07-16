@@ -45,31 +45,38 @@ const Board = (function(){
         board[position[0]].splice(position[1], 1, mark);
     }
 
-    function clickingButtons() {
-        const btns = document.querySelectorAll(".cell");
+    function takeButtonInput() {
+        return new Promise((resolve) => {
+            const btns = document.querySelectorAll(".cell");
 
-        for (let btn of btns) {
-            btn.addEventListener("click", (e) => {
-                console.log(e.target.dataset.pos);
-            })
-        }
+            for (let btn of btns) {
+                btn.addEventListener("click", function handler(e) {
+                    const clickedCell = e.target.dataset.pos
+                        .split("-")
+                        .map(Number);
+
+                    btns.forEach(b => b.removeEventListener("click", handler));
+
+                    resolve(clickedCell);
+                });
+            }
+        }) 
     }
+    
 
-    clickingButtons();
-
-
-    return {setPos, checkPos, isWinningPos, isBoardEmpty, board}
+    return {setPos, checkPos, isWinningPos, isBoardEmpty, board, takeButtonInput}
 })();
 
 const GameController = (function(){
     let gameOnFlag = true;
     let playerFlag = true;
     let computerFlag = true;
+    const startButton = document.querySelector(".start-button");
 
 
-    function currentTurn(move, mark, flag) {
+    async function currentTurn(move, mark, flag) {
         flag = true;
-        const currentMove = move();
+        const currentMove = await move();
         console.log(currentMove);
         Board.setPos(currentMove, mark);
     }
@@ -79,16 +86,18 @@ const GameController = (function(){
         const isWinPos = Board.isWinningPos(checkCurrentPos);
         if (isWinPos.length >= 1) {
                 gameOnFlag = false;
-                console.log(isWinPos);
+                // console.log(isWinPos); 
+                return;
         } else if (!Board.isBoardEmpty()) {
             gameOnFlag = false;
             console.log("It's a draw!")
+            return;
         } else flag = false;
     }
 
-    function gameOn() {
+    async function gameOn() {
         while (gameOnFlag) {
-            currentTurn(player1.takeInput, player1.playerMark, playerFlag);
+            await currentTurn(Board.takeButtonInput, player1.playerMark, playerFlag);
             checkWin(player1.playerMark, playerFlag);
             if (Board.isBoardEmpty() && computerFlag) {
                 currentTurn(computer.choosePosition,
@@ -98,7 +107,10 @@ const GameController = (function(){
         }
     }
 
-    // gameOn();
+    startButton.addEventListener("click", (e) => {
+        if (e.target) gameOn()
+    })
+
     
 })();
 
