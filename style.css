@@ -69,8 +69,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .board-display {
     /*container*/
-    border: 2px solid pink;
-    width: 30%;
+    /* border: 2px solid pink; */
+    width: 40%;
     padding: 2rem;
     
     /*grid*/
@@ -91,9 +91,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cell {
-    padding: 30px;
     border: none;
+    width: 7vw;
+    height: 10vh;
+
     background-color: white;
+    font-size: 2rem;
 }
 
 .row2, .row3 {
