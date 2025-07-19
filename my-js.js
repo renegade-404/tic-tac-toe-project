@@ -2,6 +2,7 @@ const player1 = createPlayer('Maru');
 const computer = createComputer();
 
 const Board = (function(){
+    const btns = document.querySelectorAll(".cell");
     const board = [["", "", ""], ["", "", ""], ["", "", ""]];
     const winningPos = {
         1: [[0, 0], [0, 1], [0, 2]],
@@ -46,8 +47,7 @@ const Board = (function(){
     }
 
     function takeButtonInput() {
-        return new Promise((resolve) => {
-            const btns = document.querySelectorAll(".cell");
+        function takeClick(resolve, reject) {
 
             for (let btn of btns) {
                 btn.addEventListener("click", function handler(e) {
@@ -57,14 +57,31 @@ const Board = (function(){
 
                     btns.forEach(b => b.removeEventListener("click", handler));
 
-                    resolve(clickedCell);
+                    if (board[clickedCell[0]][clickedCell[1]] !== "") reject("wrong move");
+                    else {
+                        btn.textContent = player1.playerMark;
+                        resolve(clickedCell);
+                    }
                 });
             }
-        }) 
+        }
+
+        return new Promise(takeClick)
+        .catch(reason => {
+            console.log(reason);
+            return reason;
+        })
+    }
+
+    function disUnDisButtons(flag) {
+        for (let btn of btns) {
+            btn.disabled = false;
+            if (!flag) btn.disabled = true;
+        } 
     }
     
 
-    return {setPos, checkPos, isWinningPos, isBoardEmpty, board, takeButtonInput}
+    return {setPos, checkPos, isWinningPos, isBoardEmpty, board, takeButtonInput, disUnDisButtons}
 })();
 
 const GameController = (function(){
@@ -76,17 +93,34 @@ const GameController = (function(){
 
     async function currentTurn(move, mark, flag) {
         flag = true;
-        const currentMove = await move();
+        let currentMove;
+        while (true) {
+            try {
+                currentMove = await move();
+                if (currentMove == "wrong move") {
+                    continue
+                } else {
+                    Board.setPos(currentMove, mark);
+                    break;
+                }
+                
+            } catch (e) {
+                if (e == "wrong move") return;
+                else throw e;
+        }
+    } 
         console.log(currentMove);
-        Board.setPos(currentMove, mark);
-    }
+        
+    
+}
 
     function checkWin(mark, flag) {
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
         if (isWinPos.length >= 1) {
                 gameOnFlag = false;
-                // console.log(isWinPos); 
+                console.log(`${mark} wins!`)
+                Board.disUnDisButtons(gameOnFlag);
                 return;
         } else if (!Board.isBoardEmpty()) {
             gameOnFlag = false;
@@ -99,16 +133,21 @@ const GameController = (function(){
         while (gameOnFlag) {
             await currentTurn(Board.takeButtonInput, player1.playerMark, playerFlag);
             checkWin(player1.playerMark, playerFlag);
+            if (!gameOnFlag) break;
             if (Board.isBoardEmpty() && computerFlag) {
                 currentTurn(computer.choosePosition,
                      computer.computerMark, computerFlag);
                 checkWin(computer.computerMark, computerFlag);
+                if (!gameOnFlag) break;
             }
         }
     }
 
     startButton.addEventListener("click", (e) => {
-        if (e.target) gameOn()
+        if (e.target) {
+            Board.disUnDisButtons(gameOnFlag);
+            gameOn();
+        }
     })
 
     
@@ -119,12 +158,7 @@ function createPlayer(name) {
     const playerName = name;
     const playerMark = "o";
 
-    function takeInput() {
-        const move = prompt("Please choose your position accordingly to the scheme: row number,square number.")
-        return move.split(",").map(item => +item);
-    }
-
-    return {playerName, playerMark, takeInput}
+    return {playerName, playerMark}
 };
 
 function createComputer() {
