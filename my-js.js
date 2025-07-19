@@ -44,6 +44,10 @@ const Board = (function(){
 
     const setPos = function(position, mark) {
         board[position[0]].splice(position[1], 1, mark);
+        if (mark == computer.computerMark) {
+            const cell = document.querySelector(`[data-pos='${position[0]}-${position[1]}']`);
+            cell.textContent = mark;
+        }
     }
 
     function takeButtonInput() {
@@ -68,7 +72,6 @@ const Board = (function(){
 
         return new Promise(takeClick)
         .catch(reason => {
-            console.log(reason);
             return reason;
         })
     }
@@ -105,8 +108,7 @@ const GameController = (function(){
                 }
                 
             } catch (e) {
-                if (e == "wrong move") return;
-                else throw e;
+                throw e;
         }
     } 
         console.log(currentMove);
