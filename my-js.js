@@ -3,7 +3,7 @@ const computer = createComputer();
 
 const Board = (function(){
     const btns = document.querySelectorAll(".cell");
-    const board = [["", "", ""], ["", "", ""], ["", "", ""]];
+    let board = [["", "", ""], ["", "", ""], ["", "", ""]];
     const winningPos = {
         1: [[0, 0], [0, 1], [0, 2]],
         2: [[1, 0], [1, 1], [1, 2]],
@@ -22,20 +22,23 @@ const Board = (function(){
         if (column.length > 0) {
             for (let i = 0; i < column.length; i++) {
                 let squares = drawIndex(board[column[i]], playerMark);
-                let sortedSquares = squares.map(item => [column[i], item]);
-                currentPos.push(sortedSquares);
+                for (let j = 0; j < squares.length; j++) {
+                    currentPos.push([column[i], squares[j]]);
+                }
+                
             }
         }
         return currentPos;
     }
 
     function isWinningPos(playerPos) { // returns an array of winning positions or an empty array
-        playerPos = playerPos.filter((item) => {
-            for (let key in winningPos) {
-                if (winningPos[key].toString() == item.toString()) return item;
-            }
-        })
-        return playerPos.toString();
+        for (let key in winningPos) {
+            if (JSON.stringify(winningPos[key]) === JSON.stringify(playerPos)) {
+                console.log("ok");
+                return true;
+            } 
+        }
+        return false;
     }
 
     function isBoardEmpty() {
@@ -82,9 +85,14 @@ const Board = (function(){
             if (!flag) btn.disabled = true;
         } 
     }
+
+    function resetBoard() {
+        board = board.map(item => item.map(item => item = ""));
+    }
     
 
-    return {setPos, checkPos, isWinningPos, isBoardEmpty, board, takeButtonInput, disUnDisButtons}
+    return {setPos, checkPos, isWinningPos, isBoardEmpty, board,
+         takeButtonInput, disUnDisButtons, resetBoard}
 })();
 
 const GameController = (function(){
@@ -92,6 +100,7 @@ const GameController = (function(){
     let playerFlag = true;
     let computerFlag = true;
     const startButton = document.querySelector(".start-button");
+    const resetButton = document.querySelector(".reset-button");
 
 
     async function currentTurn(move, mark, flag) {
@@ -119,14 +128,14 @@ const GameController = (function(){
     function checkWin(mark, flag) {
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
-        if (isWinPos.length >= 1) {
+        if (isWinPos) {
                 gameOnFlag = false;
-                console.log(`${mark} wins!`)
                 Board.disUnDisButtons(gameOnFlag);
+                alert(`${mark} wins!`)
                 return;
         } else if (!Board.isBoardEmpty()) {
             gameOnFlag = false;
-            console.log("It's a draw!")
+            alert("It's a draw!")
             return;
         } else flag = false;
     }
@@ -145,10 +154,21 @@ const GameController = (function(){
         }
     }
 
-    startButton.addEventListener("click", (e) => {
-        if (e.target) {
-            Board.disUnDisButtons(gameOnFlag);
-            gameOn();
+    startButton.addEventListener("click", () => {
+        Board.disUnDisButtons(gameOnFlag);
+        gameOn();
+    })
+
+    resetButton.addEventListener("click", () => {
+        Board.resetBoard();
+        gameOnFlag = true;
+        playerFlag = true;
+        computerFlag = true;
+
+        const btns = document.querySelectorAll(".cell");
+
+        for (let btn of btns) {
+            btn.textContent = "";
         }
     })
 
