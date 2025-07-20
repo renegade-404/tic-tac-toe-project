@@ -1,0 +1,2 @@
+1. function isWinningPos // done
+2. 
