@@ -67,10 +67,11 @@ const Board = (function(){
                         .split("-")
                         .map(Number);
 
-                    btns.forEach(b => b.removeEventListener("click", handler));
+                        btns.forEach(b => b.removeEventListener("click", handler));
 
                     if (board[clickedCell[0]][clickedCell[1]] !== "") reject("wrong move");
                     else {
+                        
                         btn.textContent = player1.playerMark;
                         resolve(clickedCell);
                     }
@@ -92,7 +93,7 @@ const Board = (function(){
     }
 
     function resetBoard() {
-        this.board = [["", "", ""], ["", "", ""], ["", "", ""]];
+        board = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
     
 
@@ -102,14 +103,11 @@ const Board = (function(){
 
 const GameController = (function(){
     let gameOnFlag = true;
-    let playerFlag = true;
-    let computerFlag = true;
     const startButton = document.querySelector(".start-button");
     const resetButton = document.querySelector(".reset-button");
 
 
-    async function currentTurn(move, mark, flag) {
-        flag = true;
+    async function currentTurn(move, mark) {
         let currentMove;
         while (true) {
             try {
@@ -130,7 +128,7 @@ const GameController = (function(){
     
 }
 
-    function checkWin(mark, flag) {
+    function checkWin(mark) {
         const checkCurrentPos = Board.checkPos(mark);
         const isWinPos = Board.isWinningPos(checkCurrentPos);
         if (isWinPos) {
@@ -142,18 +140,18 @@ const GameController = (function(){
             gameOnFlag = false;
             alert("It's a draw!")
             return;
-        } else flag = false;
+        }
     }
 
     async function gameOn() {
         while (gameOnFlag) {
-            await currentTurn(Board.takeButtonInput, player1.playerMark, playerFlag);
-            checkWin(player1.playerMark, playerFlag);
+            await currentTurn(Board.takeButtonInput, player1.playerMark);
+            checkWin(player1.playerMark);
             if (!gameOnFlag) break;
-            if (Board.isBoardEmpty() && computerFlag) {
-                currentTurn(computer.choosePosition,
-                     computer.computerMark, computerFlag);
-                checkWin(computer.computerMark, computerFlag);
+            if (Board.isBoardEmpty()) {
+                await currentTurn(computer.choosePosition,
+                     computer.computerMark);
+                checkWin(computer.computerMark);
                 if (!gameOnFlag) break;
             }
         }
@@ -175,6 +173,8 @@ const GameController = (function(){
         for (let btn of btns) {
             btn.textContent = "";
         }
+
+        gameOn();
     })
 
     
