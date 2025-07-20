@@ -21,11 +21,12 @@ const Board = (function(){
 
         if (column.length > 0) {
             for (let i = 0; i < column.length; i++) {
+                currentPos.push([]);
                 let squares = drawIndex(board[column[i]], playerMark);
                 for (let j = 0; j < squares.length; j++) {
-                    currentPos.push([column[i], squares[j]]);
+                    currentPos[i].push([column[i], squares[j]]);
                 }
-                
+
             }
         }
         return currentPos;
@@ -33,10 +34,14 @@ const Board = (function(){
 
     function isWinningPos(playerPos) { // returns an array of winning positions or an empty array
         for (let key in winningPos) {
-            if (JSON.stringify(winningPos[key]) === JSON.stringify(playerPos)) {
-                console.log("ok");
-                return true;
-            } 
+            for (let x = 0; x < playerPos.length; x++) {
+                if (JSON.stringify(winningPos[key]) === JSON.stringify(playerPos[x])) {
+                    console.log(playerPos[x]);
+                    return true;
+
+                }
+            }
+
         }
         return false;
     }
