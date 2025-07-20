@@ -87,7 +87,7 @@ const Board = (function(){
     }
 
     function resetBoard() {
-        board = board.map(item => item.map(item => item = ""));
+        this.board = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
     
 
