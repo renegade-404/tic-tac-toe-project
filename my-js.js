@@ -38,18 +38,21 @@ const Board = (function(){ // handles operations on the inputs and cells; return
     function checkIfWinningPosition(playerPosition) { // returns true if winning position is found
         const flatPlayerPosition = playerPosition.flat();
         
+        
         for (let key in winningPositions) {
+            const winPos = [];
             let matchCount = 0; // to count found matching win coordinates
  
             for (let winCoordination of winningPositions[key]) {
                 if (flatPlayerPosition.some(pos => 
                     JSON.stringify(pos) === JSON.stringify(winCoordination))) { // compare arrays
                     matchCount++;
+                    winPos.push(winCoordination);
                 }
             }
             // found a winning position ? return true
             if (matchCount === 3) {
-                return true;
+                return winPos;
             }
         }
         return false;
@@ -118,12 +121,25 @@ const Board = (function(){ // handles operations on the inputs and cells; return
     function resetBoard() {
         return board = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
-    
+
+    function winPosColorChange(winPos) { // changes color of the winning position
+        winPos = winPos.map(item => item);
+        for (let i = 0; i < winPos.length; i++) {
+            winPos[i] = winPos[i].join("-");
+        }
+
+        for (let i = 0; i < winPos.length; i++) {
+            for (let btn of cellButtons) {
+                if (winPos[i] == btn.dataset.pos) btn.classList.add("win-highlight");
+            }
+        }
+    }
+
 
     return {setPosition, returnPositions,
             checkIfWinningPosition, isBoardEmpty,
             getBoardCopy, takeButtonInput, disableCellsButtons,
-            resetBoard, cleanupCellsListeners}
+            resetBoard, cleanupCellsListeners, winPosColorChange}
 })();
 
 const GameController = (function(){ // controls game logic; handles game start and reset;
@@ -157,7 +173,8 @@ const GameController = (function(){ // controls game logic; handles game start a
         const isWinningPosition = Board.checkIfWinningPosition(checkCurrentPosition);
         if (isWinningPosition) {
                 Board.disableCellsButtons(true);
-                alert(`${mark} wins!`)
+                console.log(isWinningPosition);
+                Board.winPosColorChange(isWinningPosition);
                 return true;
         } else if (!Board.isBoardEmpty()) {
             alert("It's a draw!")
@@ -197,6 +214,7 @@ const GameController = (function(){ // controls game logic; handles game start a
 
         const cellButtons = document.querySelectorAll(".cell");
         cellButtons.forEach(btn => btn.textContent = "");
+        cellButtons.forEach(btn => btn.classList.remove("win-highlight"));
 
         gameStart();
     })
