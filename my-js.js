@@ -32,7 +32,7 @@ const Board = (function(){ // handles operations on the inputs and cells; return
 
             }
         }
-        return currentPositions; // returns an array [[row[positions]], row[positions], row[positions]]
+        return currentPositions; // returns an array [[row[[position]], row[[position]], row[[position]]]
     }
 
     function checkIfWinningPosition(playerPosition) { // returns true if winning position is found
