@@ -1,6 +1,5 @@
 /*variables*/
 
-
 /*Normalize*/
 *, *::before, *::after {
   box-sizing: border-box;
@@ -16,9 +15,25 @@
   }
 }
 body {
+  /*fonts*/
+  font-size: 2rem;
+  font-family: "Bitcount Prop Single", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" -7,
+    "CRSV" 1,
+    "ELSH" 6.2,
+    "ELXP" 30;
+
+
   line-height: 1.5;
 
   -webkit-font-smoothing: antialiased;
+
+  /*styling*/
+  background-color: #4F1C51;
 }
 
 img, picture, video, canvas, svg {
@@ -57,19 +72,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .game-container {
+    background-color: #FE7743;
+
     margin: auto;
     height: 80%;
     width: 50%;
-    border: 2px solid black;
+    border: 5px dashed #FFB200;
 
-    & > .game-score, .reset-button {
+    & > .game-score {
         padding: 1rem;
     }
 }
 
 .board-display {
     /*container*/
-    /* border: 2px solid pink; */
     width: 40%;
     padding: 2rem;
     
@@ -82,23 +98,58 @@ h1, h2, h3, h4, h5, h6 {
     & > * {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        background-color: inherit;
 
 
         & :not(:last-child) {
-            border-right: 2px solid green;
+            border-right: 4px solid #2A1458;
         }
     }
 }
 
 .cell {
+    /*fonts*/
+    font-family: "Bitcount Prop Single", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
+    /*cell styling*/
+    background-color: inherit;
     border: none;
     width: 7vw;
     height: 10vh;
 
-    background-color: white;
+    /* background-color: white; */
     font-size: 2rem;
 }
 
 .row2, .row3 {
-    border-top: 2px solid green;
+    border-top: 4px solid crimson;
+}
+
+.reset-button,
+.start-button {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  transition: 0.6s;
+  background-color: #FE7743;
+  border: none;
+}
+
+.start-button:hover {
+  background-color: #347433;
+}
+
+.reset-button:hover {
+  background-color: #CB0404;
+  color: white;
+}
+
+div .reset-button {
+  margin-bottom: 1rem;
+}
+
+.win-highlight {
+  color: #347433;
 }
