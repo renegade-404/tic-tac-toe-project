@@ -22,29 +22,28 @@ const Board = (function(){ // handles operations on the inputs and cells; return
         const rowsWithCells = drawRowIndex(board, playerMark);
         const currentPositions = [];
 
-        if (rowsWithCells.length > 0) { // pushes row
+        if (rowsWithCells.length > 0) { 
             for (let i = 0; i < rowsWithCells.length; i++) {
-                currentPositions.push([]);
-                let cells = drawColumnIndex(board[rowsWithCells[i]], playerMark);
+                currentPositions.push([]); // pushes empty row for coordinates
+                let cells = drawCellIndex(board[rowsWithCells[i]], playerMark); // returns indexes with a mark
                 for (let j = 0; j < cells.length; j++) {
-                    currentPositions[i].push([rowsWithCells[i], cells[j]]);
+                    currentPositions[i].push([rowsWithCells[i], cells[j]]); // pushes coordinates into the row
                 }
 
             }
         }
-        return currentPositions;
+        return currentPositions; // returns an array [[row[positions]], row[positions], row[positions]]
     }
 
-    function checkIfWinningPosition(playerPosition) { // returns true if winning position found
-
+    function checkIfWinningPosition(playerPosition) { // returns true if winning position is found
         const flatPlayerPosition = playerPosition.flat();
         
         for (let key in winningPositions) {
-            let matchCount = 0;
+            let matchCount = 0; // to count found matching win coordinates
  
             for (let winCoordination of winningPositions[key]) {
                 if (flatPlayerPosition.some(pos => 
-                    JSON.stringify(pos) === JSON.stringify(winCoordination))) {
+                    JSON.stringify(pos) === JSON.stringify(winCoordination))) { // compare arrays
                     matchCount++;
                 }
             }
@@ -60,7 +59,8 @@ const Board = (function(){ // handles operations on the inputs and cells; return
         return board.some(item => item.includes(""));
     }
 
-    function setPosition(position, mark) {
+    function setPosition(position, mark) { // add a position into the board;
+        // if computer's turn - insert computer's mark
         board[position[0]].splice(position[1], 1, mark);
         if (mark == computer.computerMark) {
             const cell = document.querySelector(`[data-pos='${position[0]}-${position[1]}']`);
@@ -68,7 +68,7 @@ const Board = (function(){ // handles operations on the inputs and cells; return
         }
     }
 
-    function takeButtonInput() {
+    function takeButtonInput() { // handles player's click inputs
         function takeClick(resolve, reject) {
             currentHandler = function handleCellClick(e) {
                 const clickedCell = e.target.dataset.pos.split("-").map(Number);
@@ -76,7 +76,7 @@ const Board = (function(){ // handles operations on the inputs and cells; return
                 const column = clickedCell[0];
                 const col = clickedCell[1];
 
-                if (Board.getBoardCopy()[column][col] !== "") {
+                if (Board.getBoardCopy()[column][col] !== "") { // reject if occupied position
                     reject("wrong move");
                     return
                 }
@@ -84,7 +84,7 @@ const Board = (function(){ // handles operations on the inputs and cells; return
                 e.target.textContent = player.playerMark;
                 resolve(clickedCell);
 
-                cleanupCellsListeners();
+                cleanupCellsListeners(); // remove eventListener from the button
             }
 
             for (let btn of cellButtons) {
@@ -104,11 +104,11 @@ const Board = (function(){ // handles operations on the inputs and cells; return
                 btn.removeEventListener("click", currentHandler);
             }
 
-            currentHandler = null;
+            currentHandler = null; // reset
         }
     }
 
-    function disableCellsButtons(gameFinished) {
+    function disableCellsButtons(gameFinished) { // disables buttons depending of gameFinished status
         for (let btn of cellButtons) {
             btn.disabled = false;
             if (gameFinished) btn.disabled = true;
@@ -126,19 +126,20 @@ const Board = (function(){ // handles operations on the inputs and cells; return
             resetBoard, cleanupCellsListeners}
 })();
 
-const GameController = (function(){
+const GameController = (function(){ // controls game logic; handles game start and reset;
+    // 
     let isGameRunning = false;
     const startButton = document.querySelector(".start-button");
     const resetButton = document.querySelector(".reset-button");
 
 
-    async function currentTurn(move, mark) {
+    async function currentTurn(move, mark) { // sets a move on the board if not rejected in takeButtonInput
         let currentMove;
         while (true) {
             try {
                 currentMove = await move();
                 if (currentMove == "wrong move") {
-                    continue
+                    continue // loops until the right move is chosen
                 } else {
                     Board.setPosition(currentMove, mark);
                     break;
@@ -147,13 +148,11 @@ const GameController = (function(){
             } catch (e) {
                 throw e;
         }
-    } 
-        console.log(currentMove);
-        
-    
+    }   
 }
 
-    function checkWin(mark) {
+    function checkIfWinOrDraw(mark) {
+        // returns true if wining position found or the board is full
         const checkCurrentPosition = Board.returnPositions(mark);
         const isWinningPosition = Board.checkIfWinningPosition(checkCurrentPosition);
         if (isWinningPosition) {
@@ -168,27 +167,28 @@ const GameController = (function(){
         return false;
     }
 
-    async function gameStart() {
+    async function gameStart() { // runs the game in turns
         if (isGameRunning) return;
         isGameRunning = true;
         while (true) {
             await currentTurn(Board.takeButtonInput, player.playerMark);
-            if (checkWin(player.playerMark)) break;
+            if (checkIfWinOrDraw(player.playerMark)) break;
             if (Board.isBoardEmpty()) {
                 await currentTurn(computer.chooseRandomPosition,
                      computer.computerMark);
-                if (checkWin(computer.computerMark)) break;
+                if (checkIfWinOrDraw(computer.computerMark)) break;
             }
         }
         isGameRunning = false; 
     }
 
-    startButton.addEventListener("click", () => {
+    startButton.addEventListener("click", () => { // enable start button
         Board.disableCellsButtons(false);
         gameStart();
     })
 
-    resetButton.addEventListener("click", async () => {
+    resetButton.addEventListener("click", async () => { // enable reset button;
+        // stops the game, resets the board and disables buttons; removes evenListeners from the cells
         isGameRunning = false; 
         await new Promise(resolve => setTimeout(resolve, 100));
         Board.resetBoard();
@@ -215,16 +215,16 @@ function createPlayer(name) {
 function createComputer(getBoard) {
     const computerMark = "x";
 
-    function chooseRandomPosition() { // returns an array of random open position
+    function chooseRandomPosition() { // returns a random position coordinates from the open positions
         const board = getBoard();
 
         const row = drawRowIndex(board, "");
         const randomRowIndex = Math.floor(Math.random() * row.length);
 
-        const column = drawColumnIndex(board[row[randomRowIndex]], "");
-        const randomColumnIndex = Math.floor(Math.random() * column.length);
+        const column = drawCellIndex(board[row[randomRowIndex]], "");
+        const randomCellIndex = Math.floor(Math.random() * column.length);
 
-        return [row[randomRowIndex], column[randomColumnIndex]];
+        return [row[randomRowIndex], column[randomCellIndex]];
 
     }
 
@@ -234,7 +234,7 @@ function createComputer(getBoard) {
 const player = createPlayer('Maru');
 const computer = createComputer(() => Board.getBoardCopy());
 
-function drawRowIndex(arr, mark) {
+function drawRowIndex(arr, mark) { // finds a row that includes provided mark
   return arr
   .map((item, index) => {
     if (item.includes(mark)) return index
@@ -242,7 +242,7 @@ function drawRowIndex(arr, mark) {
   .filter(item => item !== undefined);
 }
 
-function drawColumnIndex(arr, mark) {
+function drawCellIndex(arr, mark) { // returns a cell that includes provided mark
   return arr
   .map((item, index) => {
     if (item === mark) return index
