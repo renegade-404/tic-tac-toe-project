@@ -79,9 +79,15 @@ h1, h2, h3, h4, h5, h6 {
     width: 50%;
     border: 5px dashed #FFB200;
 
-    & > .game-score {
+    & > :first-child {
         padding: 1rem;
     }
+}
+
+.score-display {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .board-display {
