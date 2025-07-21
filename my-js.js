@@ -173,8 +173,8 @@ const GameController = (function(){ // controls game logic; handles game start a
         const isWinningPosition = Board.checkIfWinningPosition(checkCurrentPosition);
         if (isWinningPosition) {
                 Board.disableCellsButtons(true);
-                console.log(isWinningPosition);
                 Board.winPosColorChange(isWinningPosition);
+                player.addScore();
                 return true;
         } else if (!Board.isBoardEmpty()) {
             alert("It's a draw!")
@@ -226,8 +226,16 @@ const GameController = (function(){ // controls game logic; handles game start a
 function createPlayer(name) {
     const playerName = name;
     const playerMark = "o";
+    let score = 0;
+    let scorePlace = document.querySelector(".score");
+    scorePlace.textContent = score;
 
-    return {playerName, playerMark}
+    const addScore = () => {
+        score += 1;
+        scorePlace.textContent = score;
+    };
+
+    return {playerName, playerMark, addScore}
 };
 
 function createComputer(getBoard) {
