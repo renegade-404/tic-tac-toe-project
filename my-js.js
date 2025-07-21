@@ -1,4 +1,5 @@
-const Board = (function(){
+const Board = (function(){ // handles operations on the inputs and cells; returns information
+    // to the gameController about each player's inputs and whether there is a winner or not
     const cellButtons = document.querySelectorAll(".cell");
     let board = [["", "", ""], ["", "", ""], ["", "", ""]];
     let currentHandler = null;
@@ -13,20 +14,20 @@ const Board = (function(){
         8: [[0, 0], [1, 1], [2, 2]],
     };
 
-    function getBoardCopy() {
-        return board.map(row => [...row]);
+    function getBoardCopy() { // for access to the current state of the board
+        return board.map(column => [...column]);
     }
 
     function returnPositions(playerMark) { // returns an array of  current positions
-        const columnsWithCells = drawColumnIndex(board, playerMark);
+        const rowsWithCells = drawRowIndex(board, playerMark);
         const currentPositions = [];
 
-        if (columnsWithCells.length > 0) {
-            for (let i = 0; i < columnsWithCells.length; i++) {
+        if (rowsWithCells.length > 0) { // pushes row
+            for (let i = 0; i < rowsWithCells.length; i++) {
                 currentPositions.push([]);
-                let cells = drawRowIndex(board[columnsWithCells[i]], playerMark);
+                let cells = drawColumnIndex(board[rowsWithCells[i]], playerMark);
                 for (let j = 0; j < cells.length; j++) {
-                    currentPositions[i].push([columnsWithCells[i], cells[j]]);
+                    currentPositions[i].push([rowsWithCells[i], cells[j]]);
                 }
 
             }
@@ -72,10 +73,10 @@ const Board = (function(){
             currentHandler = function handleCellClick(e) {
                 const clickedCell = e.target.dataset.pos.split("-").map(Number);
 
-                const row = clickedCell[0];
+                const column = clickedCell[0];
                 const col = clickedCell[1];
 
-                if (Board.getBoardCopy()[row][col] !== "") {
+                if (Board.getBoardCopy()[column][col] !== "") {
                     reject("wrong move");
                     return
                 }
@@ -217,13 +218,13 @@ function createComputer(getBoard) {
     function chooseRandomPosition() { // returns an array of random open position
         const board = getBoard();
 
-        const column = drawColumnIndex(board, "");
-        const randomColumnIndex = Math.floor(Math.random() * column.length);
-
-        const row = drawRowIndex(board[column[randomColumnIndex]], "");
+        const row = drawRowIndex(board, "");
         const randomRowIndex = Math.floor(Math.random() * row.length);
 
-        return [column[randomColumnIndex], row[randomRowIndex]];
+        const column = drawColumnIndex(board[row[randomRowIndex]], "");
+        const randomColumnIndex = Math.floor(Math.random() * column.length);
+
+        return [row[randomRowIndex], column[randomColumnIndex]];
 
     }
 
@@ -233,7 +234,7 @@ function createComputer(getBoard) {
 const player = createPlayer('Maru');
 const computer = createComputer(() => Board.getBoardCopy());
 
-function drawColumnIndex(arr, mark) {
+function drawRowIndex(arr, mark) {
   return arr
   .map((item, index) => {
     if (item.includes(mark)) return index
@@ -241,7 +242,7 @@ function drawColumnIndex(arr, mark) {
   .filter(item => item !== undefined);
 }
 
-function drawRowIndex(arr, mark) {
+function drawColumnIndex(arr, mark) {
   return arr
   .map((item, index) => {
     if (item === mark) return index
